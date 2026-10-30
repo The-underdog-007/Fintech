@@ -21,7 +21,7 @@ Requirements: Python 3.10+ and Node.js 18+.
    npm install
    npm run dev
    ```
-3. Open http://localhost:5173. Demo login: `demo@seamless.in` / `Seamless@123` (OTP: `123456`, transaction PIN: `1234`).
+3. Open http://localhost:5173. Demo login: `demo@seamless.in` / `Seamless@123` (OTP: `123456`, transaction PIN: `1234`). On the sign-in page, **Enter interactive demo** opens a browser-local demo that does not require the API.
 
 API docs are at http://localhost:8000/docs. Set `JWT_SECRET` before exposing the API beyond local development. OTP delivery is simulated and OTP/PIN values are seeded for this demo only.
 
@@ -32,4 +32,4 @@ API docs are at http://localhost:8000/docs. Set `JWT_SECRET` before exposing the
 - Rule-based risk assessment with score, category, reason codes, and additional verification for high-risk payments.
 - Transactions, disputes, merchant registration, QR/payment-link simulation, settlement and admin overview.
 
-All balances and transactions are fictional demo data. This is not a banking product and does not connect to UPI, IMPS, NEFT, RTGS, or any financial institution.
+All balances and transactions are fictional demo data. The interactive demo keeps its changes in this browser's local storage; normal sign-in requires the FastAPI service. This is not a banking product and does not connect to UPI, IMPS, NEFT, RTGS, or any financial institution.

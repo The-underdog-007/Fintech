@@ -130,12 +130,14 @@ The `/api/auth/otp` endpoint returns the fixed demo OTP `123456` in its response
 
 ## 5. Screens and routes
 
-The development base URL is `http://localhost:5173`. Routes other than `/`, `/login`, and `/register` require a stored JWT; without one, the app redirects to `/login`. The app has no deployed host yet, so these are local URLs, not public URLs.
+The development base URL is `http://localhost:5173`. The frontend is now published at `https://frontend-zeta-pied-69.vercel.app`. Routes other than `/`, `/login`, and `/register` require a stored session; without one, the app redirects to `/login`. The FastAPI backend is not deployed, so API-backed sign-in is unavailable on the public site; use the interactive demo mode there.
+
+**Interactive demo mode:** The sign-in page has an **Enter interactive demo** button. It bypasses API authentication and uses seeded fictional data plus localStorage mutations in the browser. It supports the main dashboard, account, beneficiary, transaction, payment, security, merchant, and dispute views without the backend. This is a frontend-only simulation; demo records stay in that browser and do not sync to SQLite or another device. Normal email/password sign-in still calls the configured API.
 
 | Route | Screen and components | Useful screenshot interactions / data |
 |---|---|---|
 | `/` | Landing page; brand/navigation, hero account card, transfer/security badges, three feature cards, footer | Show “Get started”, “Explore demo”, and the feature section. “How it works” links to `#how`, but no element with that id is implemented. |
-| `/login` | Sign-in form, demo account hint, security copy, link to registration | Sign in with `demo@seamless.in` / `Seamless@123` to reach seeded dashboard. |
+| `/login` | Sign-in form, demo account hint, explicit interactive-demo button, security copy, link to registration | On a local backend, sign in with `demo@seamless.in` / `Seamless@123`. On the public frontend, choose **Enter interactive demo**; this uses browser-local data and needs no API. |
 | `/register` | Name, email, optional phone, password form | Register a new local demo user. New users receive PIN `1234`; they have no seeded bank accounts or beneficiaries and must add a simulated bank before sending a payment. |
 | `/dashboard` | Balance/stat cards, spending area chart, account list, recent activity, payment methods, security banner | Demo user shows SBI/HDFC/ICICI, sample transactions, and balances. Use Send money to open payment flow. |
 | `/payments` | Rail picker, recipient/VPA input, amount, source account, PIN, quick-send, payment result modal | Try a known beneficiary for a low-risk success. For high-risk/OTP: use a new VPA and amount high enough to cross 70 (e.g. ₹50,000 or more), enter PIN `1234`, choose Send verification code, then submit with OTP `123456`. This creates a flagged transaction and does not debit balance. |
@@ -201,7 +203,7 @@ Vercel's Vite guidance calls for an SPA rewrite to support deep links; the suppl
 
 ### Deployment status and blockers
 
-**No public deployment URL exists yet.** At review time this workspace has no Git repository or remote, no Vercel CLI, no Vercel/Render credentials or connected deployment integration, and no hosted database/service. The application has not been published. A Vercel deployment cannot be claimed or production-verified until a Vercel account is authenticated and the frontend is deployed. The API also needs an authenticated backend host and persistent storage; a Vercel static deployment alone cannot preserve this SQLite database.
+**Frontend deployed; backend not deployed.** The Vercel production URL is `https://frontend-zeta-pied-69.vercel.app`, and root plus all SPA routes returned HTTP 200 during deployment verification. The Vercel CLI could not connect the GitHub repository for automatic deploy-on-push integration, but the direct production deploy succeeded. The FastAPI API and persistent database still need a separate authenticated backend host; the Vercel static deployment alone cannot preserve SQLite or enable real API-backed flows.
 
 Files prepared for deployment:
 
@@ -219,12 +221,12 @@ Required post-deployment settings:
 | Render API service | `DATABASE_PATH` | `/var/data/seamless.db` (set by blueprint, disk-mounted path). |
 | Render API service | `CORS_ORIGINS` | The exact Vercel production origin, optionally comma-separated with local dev origin. |
 
-After account/source access is available, deploy the API first, set its resulting URL into Vercel's `VITE_API_URL`, add the Vercel URL to API `CORS_ORIGINS`, redeploy both, then verify health, login, deep links, payment, fraud challenge, merchant registration, and dispute persistence against the public services.
+After backend account/source access is available, deploy the API first, set its resulting URL into Vercel's `VITE_API_URL`, add the Vercel URL to API `CORS_ORIGINS`, redeploy both, then verify health, API login, payment, fraud challenge, merchant registration, and dispute persistence against the public services. Public interactive demo mode works without that backend and stores mutations only in browser localStorage.
 
 ## 9. Known limitations and incomplete areas
 
-1. Payment rails, bank connectivity, balances, OTP, merchant payments, and settlements are simulations only.
-2. The frontend previously hard-coded localhost API; it now supports `VITE_API_URL`, but production values are not yet configured.
+1. Payment rails, bank connectivity, balances, OTP, merchant payments, and settlements are simulations only. The added browser-local demo mode is separate from the FastAPI-backed local demo and does not persist to the server database.
+2. The frontend supports `VITE_API_URL`, but production does not yet have a backend URL configured. Normal API sign-in and server-backed actions remain unavailable publicly; the public interactive demo runs entirely in the browser.
 3. SQLite is suitable for the local/demo single-process prototype. Production persistence depends on the configured persistent disk; this is not a horizontally-scalable database design.
 4. The app defaults to a known development JWT secret when `JWT_SECRET` is unset. Production must use a generated secret.
 5. The fixed OTP is returned by the API, registration sets the same PIN for every new user, and registration/login do not require OTP.
