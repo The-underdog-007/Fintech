@@ -130,7 +130,7 @@ The `/api/auth/otp` endpoint returns the fixed demo OTP `123456` in its response
 
 ## 5. Screens and routes
 
-The development base URL is `http://localhost:5173`. The frontend is now published at `https://frontend-zeta-pied-69.vercel.app`. Routes other than `/`, `/login`, and `/register` require a stored session; without one, the app redirects to `/login`. The FastAPI backend is not deployed, so API-backed sign-in is unavailable on the public site; use the interactive demo mode there.
+The development base URL is `http://localhost:5173`. The frontend is published at `https://seamless-payments.vercel.app`. Routes other than `/`, `/login`, and `/register` require a stored session; without one, the app redirects to `/login`. The FastAPI backend is not deployed, so API-backed sign-in is unavailable on the public site; use the interactive demo mode there until the backend is deployed.
 
 **Interactive demo mode:** The sign-in page has an **Enter interactive demo** button. It bypasses API authentication and uses seeded fictional data plus localStorage mutations in the browser. It supports the main dashboard, account, beneficiary, transaction, payment, security, merchant, and dispute views without the backend. This is a frontend-only simulation; demo records stay in that browser and do not sync to SQLite or another device. Normal email/password sign-in still calls the configured API.
 
@@ -203,13 +203,13 @@ Vercel's Vite guidance calls for an SPA rewrite to support deep links; the suppl
 
 ### Deployment status and blockers
 
-**Frontend deployed; backend not deployed.** The Vercel production URL is `https://frontend-zeta-pied-69.vercel.app`, and root plus all SPA routes returned HTTP 200 during deployment verification. The Vercel CLI could not connect the GitHub repository for automatic deploy-on-push integration, but the direct production deploy succeeded. The FastAPI API and persistent database still need a separate authenticated backend host; the Vercel static deployment alone cannot preserve SQLite or enable real API-backed flows.
+**Frontend deployed; backend not deployed.** The Vercel production URL is `https://seamless-payments.vercel.app`, and root plus all SPA routes returned HTTP 200 during deployment verification. The Vercel CLI could not connect the GitHub repository for automatic deploy-on-push integration, but direct production deploys succeeded. The FastAPI API and persistent database still need a separate authenticated backend host; the Vercel static deployment alone cannot preserve SQLite or enable API-backed flows.
 
 Files prepared for deployment:
 
 - `frontend/vercel.json` — build output and SPA route fallback.
 - `frontend/.env.example` — frontend API URL setting.
-- `render.yaml` — separate FastAPI service and persistent disk blueprint.
+- `render.yaml` — separate FastAPI service and persistent disk blueprint; CORS is set to the deployed Vercel origin plus local development.
 - API CORS now reads `CORS_ORIGINS` (local default remains `http://localhost:5173`).
 
 Required post-deployment settings:
